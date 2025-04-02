@@ -1,0 +1,144 @@
+{% extends "base.html" %}
+
+{% block title %}Comments - {{ video_details.title }}{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-12">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{{ url_for('index') }}">Home</a></li>
+                <li class="breadcrumb-item"><a href="{{ url_for('results') }}">Results</a></li>
+                <li class="breadcrumb-item active">Comments</li>
+            </ol>
+        </nav>
+
+        <div class="card shadow mb-4">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h4 class="mb-0">Comments</h4>
+                <span class="badge bg-primary rounded-pill">{{ total_filtered }} / {{ total_comments }}</span>
+            </div>
+            <div class="card-body">
+                <h5 class="card-title">{{ video_details.title }}</h5>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-3">
+        <div class="card shadow mb-4">
+            <div class="card-header">
+                <h5 class="mb-0">Filters</h5>
+            </div>
+            <div class="card-body">
+                <form id="filter-form" action="{{ url_for('comments') }}" method="get">
+                    <div class="mb-3">
+                        <label for="sentiment" class="form-label">Overall Sentiment</label>
+                        <select class="form-select" id="sentiment" name="sentiment">
+                            <option value="all" {% if selected_sentiment == 'all' %}selected{% endif %}>All Sentiments</option>
+                            <option value="positive" {% if selected_sentiment == 'positive' %}selected{% endif %}>Positive</option>
+                            <option value="negative" {% if selected_sentiment == 'negative' %}selected{% endif %}>Negative</option>
+                            <option value="neutral" {% if selected_sentiment == 'neutral' %}selected{% endif %}>Neutral</option>
+                        </select>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="aspect" class="form-label">Aspect</label>
+                        <select class="form-select" id="aspect" name="aspect">
+                            <option value="all" {% if selected_aspect == 'all' %}selected{% endif %}>All Aspects</option>
+                            {% for aspect in all_aspects %}
+                            <option value="{{ aspect }}" {% if selected_aspect == aspect %}selected{% endif %}>{{ aspect | capitalize }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="aspect_sentiment" class="form-label">Aspect Sentiment</label>
+                        <select class="form-select" id="aspect_sentiment" name="aspect_sentiment" {% if selected_aspect == 'all' %}disabled{% endif %}>
+                            <option value="all" {% if selected_aspect_sentiment == 'all' %}selected{% endif %}>All</option>
+                            <option value="positive" {% if selected_aspect_sentiment == 'positive' %}selected{% endif %}>Positive</option>
+                            <option value="negative" {% if selected_aspect_sentiment == 'negative' %}selected{% endif %}>Negative</option>
+                            <option value="neutral" {% if selected_aspect_sentiment == 'neutral' %}selected{% endif %}>Neutral</option>
+                        </select>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary w-100">Apply Filters</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-9">
+        <div class="mb-3">
+            <div class="d-flex justify-content-between align-items-center">
+                <h5>Filtered Comments <span class="badge bg-secondary">{{ total_filtered }}</span></h5>
+                <div>
+                    <a href="{{ url_for('comments') }}" class="btn btn-outline-secondary btn-sm">Clear Filters</a>
+                </div>
+            </div>
+        </div>
+        
+        {% if comments %}
+            {% for comment in comments %}
+            <div class="card shadow-sm mb-3 comment-card">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between mb-2">
+                        <div>
+                            <strong>{{ comment.author }}</strong>
+                            <small class="text-muted ms-2">{{ comment.published_at | format_date }}</small>
+                        </div>
+                        <div>
+                            <span class="badge {% if comment.overall_sentiment == 'positive' %}bg-success{% elif comment.overall_sentiment == 'negative' %}bg-danger{% else %}bg-secondary{% endif %}">
+                                {{ comment.overall_sentiment | capitalize }}
+                            </span>
+                            <small class="text-muted ms-2">
+                                <i class="fas fa-thumbs-up"></i> {{ comment.like_count }}
+                            </small>
+                        </div>
+                    </div>
+                    
+                    <p class="comment-text mb-2">{{ comment.comment_text }}</p>
+                    
+                    {% if comment.aspects %}
+                    <div class="mt-2">
+                        {% for aspect, sentiment in comment.aspects.items() %}
+                        <span class="badge bg-light text-dark border aspect-badge">
+                            {{ aspect }}: 
+                            <span class="{% if sentiment == 'positive' %}sentiment-positive{% elif sentiment == 'negative' %}sentiment-negative{% else %}sentiment-neutral{% endif %}">
+                                {{ sentiment }}
+                            </span>
+                        </span>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+            {% endfor %}
+        {% else %}
+            <div class="alert alert-info">
+                <i class="fas fa-info-circle"></i> No comments match the selected filters.
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    // Enable/disable aspect sentiment dropdown based on aspect selection
+    document.addEventListener('DOMContentLoaded', function() {
+        const aspectSelect = document.getElementById('aspect');
+        const aspectSentimentSelect = document.getElementById('aspect_sentiment');
+        
+        if (aspectSelect && aspectSentimentSelect) {
+            aspectSelect.addEventListener('change', function() {
+                aspectSentimentSelect.disabled = this.value === 'all';
+                if (this.value === 'all') {
+                    aspectSentimentSelect.value = 'all';
+                }
+            });
+        }
+    });
+</script>
+{% endblock %} 

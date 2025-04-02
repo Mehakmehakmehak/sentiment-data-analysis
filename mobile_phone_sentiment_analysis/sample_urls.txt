@@ -1,0 +1,23 @@
+# Sample YouTube URLs for Mobile Phone Review Videos
+# Each line contains one URL to a YouTube video
+# Lines starting with # are comments and will be ignored
+# Make sure to use only video URLs that are accessible and contain mobile phone reviews
+# Format: https://www.youtube.com/watch?v=VIDEO_ID
+
+# iPhone reviews
+https://www.youtube.com/watch?v=FT3ODSg1GFE
+https://www.youtube.com/watch?v=8C-Q8wiXaq0
+
+# Samsung Galaxy reviews
+https://www.youtube.com/watch?v=yCL5hHLNtBQ
+https://www.youtube.com/watch?v=HnUfzlS3p5k
+
+# Google Pixel reviews
+https://www.youtube.com/watch?v=KHs5Zs4_MLE
+https://www.youtube.com/watch?v=9Xu7LIIxSwg
+
+# Xiaomi reviews
+https://www.youtube.com/watch?v=63eFBZCODfU
+
+# OnePlus reviews
+https://www.youtube.com/watch?v=9lPmZRxgQbY 

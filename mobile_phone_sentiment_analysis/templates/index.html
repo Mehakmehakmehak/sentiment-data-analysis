@@ -1,0 +1,108 @@
+{% extends "base.html" %}
+
+{% block title %}Mobile Phone Sentiment Analysis - Home{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center mt-4">
+    <div class="col-lg-10">
+        <div class="card shadow hero-section">
+            <div class="card-body text-center py-4">
+                <h1 class="display-5 fw-bold">Mobile Phone Sentiment Analysis</h1>
+                <p class="lead">Discover what people think about mobile phones from YouTube comments</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <div class="card shadow">
+            <div class="card-header">
+                <h4>Analyze YouTube Comments</h4>
+            </div>
+            <div class="card-body">
+                <!-- Alert container for errors -->
+                <div id="alert-container">
+                    {% if error %}
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        {{ error }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                    {% endif %}
+                </div>
+
+                <form id="analysis-form" action="{{ url_for('analyze') }}" method="post">
+                    <div class="mb-3">
+                        <label for="video-url" class="form-label">YouTube Video URL</label>
+                        <input type="text" class="form-control" id="video-url" name="video_url" placeholder="https://www.youtube.com/watch?v=..." required>
+                        <div class="form-text">Enter a URL of a YouTube video reviewing a mobile phone</div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="max-comments" class="form-label">Maximum Comments to Analyze</label>
+                        <input type="number" class="form-control" id="max-comments" name="max_comments" value="100" min="10" max="500">
+                        <div class="form-text">More comments means more accurate analysis but takes longer</div>
+                    </div>
+                    <button type="submit" class="btn btn-primary"><i class="fas fa-chart-pie me-2"></i>Analyze Sentiment</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row justify-content-center mt-4">
+    <div class="col-lg-10">
+        <h3 class="text-center mb-4">How It Works</h3>
+        <div class="row">
+            <div class="col-md-4">
+                <div class="card h-100 shadow-sm">
+                    <div class="card-body text-center">
+                        <i class="fas fa-comments feature-icon"></i>
+                        <h5 class="card-title">Extract Comments</h5>
+                        <p class="card-text">We collect user comments from YouTube videos about mobile phones.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card h-100 shadow-sm">
+                    <div class="card-body text-center">
+                        <i class="fas fa-brain feature-icon"></i>
+                        <h5 class="card-title">Analyze Sentiment</h5>
+                        <p class="card-text">Our algorithms detect overall sentiment and specific aspects mentioned.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card h-100 shadow-sm">
+                    <div class="card-body text-center">
+                        <i class="fas fa-chart-bar feature-icon"></i>
+                        <h5 class="card-title">Visualize Results</h5>
+                        <p class="card-text">View easy-to-understand charts and insights about user opinions.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Form validation
+    (function() {
+        'use strict';
+        
+        const forms = document.querySelectorAll('.needs-validation');
+        
+        Array.from(forms).forEach(form => {
+            form.addEventListener('submit', event => {
+                if (!form.checkValidity()) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                }
+                
+                form.classList.add('was-validated');
+            }, false);
+        });
+    })();
+</script>
+{% endblock %} 
